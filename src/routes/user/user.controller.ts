@@ -2,7 +2,6 @@ import { Body, ClassSerializerInterceptor, Controller, Get, Post, UseInterceptor
 import { UserService } from './user.service';
 import { SignupUserDto } from './dto/signup-user.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { ApiSuccessResCommon } from 'src/decorators/response.dto.decorator';
 import { SingupUserResponseDto } from './responsedto/signup-user-res.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 
@@ -21,7 +20,6 @@ export class UserController {
     }
 
     @Post()
-    @ApiSuccessResCommon(SingupUserResponseDto)
     signup(
         @Body(new ValidationPipe()) data: SignupUserDto
     ) {

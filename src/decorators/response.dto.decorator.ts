@@ -1,14 +1,54 @@
-import { applyDecorators } from "@nestjs/common";
-import { ApiResponse } from "@nestjs/swagger";
+import { applyDecorators, Type } from "@nestjs/common";
+import { ApiOkResponse, ApiResponse, getSchemaPath } from "@nestjs/swagger";
+import { PageResDto } from "src/common/dto/page-res.dto";
 
-export const ApiSuccessResCommon = (resDto: any) => {
+export const ApiGetResponse = <T extends Type<any>>(model: T) => {
     return applyDecorators(
-        ApiResponse({ status: 200, description: '성공', type: resDto})
+        ApiOkResponse({
+            schema: {
+                allOf: [
+                    {
+                        $ref: getSchemaPath(model)
+                    }
+                ]
+            }
+        })
     );
 }
 
-export const ApiBadRequestRes = (resDto: any) => {
+export const ApiPostResponse = <T extends Type<any>>(model: T) => {
     return applyDecorators(
-        ApiResponse({status:400, description: '실패', type: resDto})
-    )
+        ApiOkResponse({
+            schema: {
+                allOf: [
+                    {
+                        $ref: getSchemaPath(model)
+                    }
+                ]
+            }
+        })
+    );
+}
+
+export const ApiGetListReponse = <T extends Type<any>>(model: T) => {
+    return applyDecorators(
+        ApiOkResponse(
+            {
+                schema: {
+                    allOf: [
+                        { $ref: getSchemaPath(PageResDto) },
+                        {
+                            properties: {
+                                items: {
+                                    type: 'array',
+                                    items: { $ref: getSchemaPath(model) },
+                                },
+                            },
+                            required: ['items'],
+                        }
+                    ]
+                }
+            }
+        )
+    );
 }
